@@ -1,0 +1,15 @@
+{
+   "background_page": "background.html",
+   "browser_action": {
+      "default_icon": "icon.png",
+      "default_title": "Open Markdown Preview Tab"
+   },
+   "description": "Preview markdown text.",
+   "icons": {
+      "128": "icon_128.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUFJ4EmUIsNYgP+Oe3BGEAxcpIpFI+fiOA/osA6GLAscsCgbqbOGU7uYE8QY5jkIb279ohbZlB7hXvepbmbTJl8nnplim+ovgMK6HVwnMb9g+XxziMbYjGCixu/yTZlkxmkIJhWlZyVVJVltWHHIL4d7sK6tXSsRzVfI6wiDQhrQIDAQAB",
+   "name": "Markdown Preview",
+   "update_url": "http://clients2.google.com/service/update2/crx",
+   "version": "1.0"
+}
