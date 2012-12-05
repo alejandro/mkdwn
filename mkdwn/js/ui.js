@@ -1318,7 +1318,6 @@ function Menu() {
   ui.Emitter.call(this);
   this.items = {};
   this.el = $(html);
-  console.log(this.el, html)
   this.el.appendTo('body').hide();
   
   this.html = html;

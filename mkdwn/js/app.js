@@ -138,8 +138,36 @@ $(document).ready(function (){
     var leap = +new Date - this.last
 
       App.u.nextTick(function (){
-        this.el.html(marked(md))
+        try { this.el.html(marked(md))} catch(ex){}
         this.last = +new Date
+        this.el.find('code').each(function (i, el){
+            var $el = $(el);
+
+            // Convert any smart quotes into dumb quotes.
+            var html = $el.html();
+            var leftSingleQuote = /‘/g;
+            var leftDoubleQuote = /“/g;
+            var singleQuote     = /’/g;
+            var doubleQuote     = /”/g;
+
+            html = html
+                .replace(leftSingleQuote, '\'')
+                .replace(leftDoubleQuote, '\"')
+                .replace(singleQuote, '\'')
+                .replace(doubleQuote, '\"');
+
+            $el.html(html);
+
+            var classes = el.className.split(/\s+/);
+            classes.forEach(function(klass){
+              if (klass.indexOf('lang-') !== -1) {
+                    var language = klass.substring('lang-'.length);
+                    $el.attr('data-language', language);
+              }
+            })
+            try { Rainbow.color(); }catch(ex){}
+        })
+        
       }.bind(this))
   }
   
