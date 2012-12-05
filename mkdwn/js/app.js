@@ -47,12 +47,15 @@ $(document).ready(function (){
     ui.Emitter.call(this)
     this.initialize()
   }
+  
+  App.Editor.prototype = App.Editor.fn = new ui.Emitter
+  
   App.Editor.include = function (o){
     Object.keys(o).forEach(function (i){
       return App.Editor.prototype[i] = o[i]
     }.bind(this))
   }
-  App.Editor.prototype = App.Editor.fn = new ui.Emitter
+  
 
   App.Editor.include({
     initialize: function (){

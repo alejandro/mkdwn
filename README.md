@@ -1,18 +1,19 @@
 # Mkdwn a Markdown Chrome|Node extension
-### FORK of  Showdown Chrome Extension
+_FORK of  Showdown Chrome Extension_ but now totally refubrished
 
-This Chrome extension allows you to preview your markdown text before posting it. This is a simple wrapper which opens the [marked][1] example page in a new tab.
+This Chrome extension allows you to preview your markdown text before posting it. If you choose to install the app (npm install -g mkdwn) you will get access to the file system and manage your markdowns proyects, like books (leanpub.com) or readmes.
 
-## Fork features
+## Features
 
-- LocalStorage Support
-- Bookmarklet for multiple docs open- 
+- Local Storage support (implemented)
+- Bookmarklet for multiple docs open (implemented)
+- Project manager (node app)
+- Github Flavored markdown via [marked](https://github.com/chjj/marked) (implemented)
+- Vim key bindings (todo)
+- more ...
 
-## Credit
+## Author
 
-**Creator:** Erich Schroeter
-
-**Contributor** Alejandro Morales
+Alejandro Morales <http://ale.mit-license.org>
 
 
-[1]: https://github.com/guybrush/showdown
