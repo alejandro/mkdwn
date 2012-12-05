@@ -2,7 +2,7 @@
 <head>
   <script>
     function openMarkdownPreviewTab() {
-      chrome.tabs.create({'url': chrome.extension.getURL('showdown/showdown-gui.html')});
+      chrome.tabs.create({'url': chrome.extension.getURL('mkdwn/index.html')});
     }
     chrome.browserAction.onClicked.addListener(openMarkdownPreviewTab);
   </script>
