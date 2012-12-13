@@ -1,4 +1,4 @@
-/*global Rainbow, define, ace, $, document, localStorage, window, marked, ui*/
+/*global Rainbow, ace, $, document, localStorage, window, marked, ui*/
 /* jshint browser:true*/ 'use strict';
 var App =  {}
 $(document).ready(function (){
@@ -35,19 +35,43 @@ $(document).ready(function (){
       })
     }
   }
-
+  /**
+   * Initialize
+   * -----------
+   */
   App.initialize = function (){
     marked.setOptions({
         gfm      : true,
         sanitize : true
-    });
+    })
+    App.editor = App.e = new App.Editor()
+    App.reader = App.r = new App.Reader()
+    App.UI.menu
+      .add('New &lt;alt+n&gt;', App.e.newCanvas)
+      .add('List', App.UI.showAll)
+      .add('Load &lt;alt+o&gt;', App.e.loadCanvas)
+      .add('Set Name', App.e.setName)
+      .add('Rename', App.UI.rename)
+      .add('Clean all', App.e.cleanCanvas)
+    
+    
+    window.oncontextmenu = function(e){
+      e.preventDefault()
+      console.log(e.pageX, e.pageY)
+      App.UI.menu.moveTo(e.pageX, e.pageY).show()
+    }
   }
   /**
-   * Markdown Editor
-   * -----------------
+   * Markdown Editor powered with Ace
+   * --------------------------------
   */
-  App.Editor = function (editor){
+  App.Editor = function (){
+    var editor = ace.edit("editor");
     ui.Emitter.call(this)
+    ace.config.set("workerPath", "components/ace/build/src")
+    editor.getSession().setMode("ace/mode/markdown")
+    editor.renderer.setShowGutter(false)
+    editor.setKeyboardHandler(require('ace/keyboard/vim').handler)
     this.initialize(editor)
   }
   
@@ -83,7 +107,7 @@ $(document).ready(function (){
       this.textContent = ''
     },
 
-    save: function (e){
+    save: function (){
       // let the event happen then fire this
       _.nextTick(function(){ 
         localStorage.setItem(this.id, JSON.stringify({
@@ -106,7 +130,7 @@ $(document).ready(function (){
       } else {
         this.merge(JSON.parse(cval))
       }
-      _.nextTick(this.emit.bind(this,'change'))
+      _.nextTick(this.emit.bind(this, 'change'))
     },
 
     merge: function (o){
@@ -115,64 +139,65 @@ $(document).ready(function (){
       }.bind(this))
     },
     rename: function (name){
-      var oid = this.id, co = this.get()
+      // var oid = this.id, co = this.get()
 
       if (!localStorage.getItem(name)){
-        this.id = name
         this.remove()
+        this.id = name
         this.save()
       } else {
 
       }
       window.location.hash = this.id
+    },
+    remove: function (){
+      return localStorage.removeItem(this.id)
     }
   })
 
   /**
    * Reader (preview) Panel
    */
-  App.Reader = function Reader() {
+  App.Reader = function Reader(name) {
     App.e.on('change', this.parse.bind(this))
-    this.el = $('[name="output"]')
-    this.active = false
-    this.kue = []
+    this.el = $('[name="' + (name || 'output') + '"]')
+    this.active = true
   }
 
   App.Reader.prototype.parse = function() {
     var md = App.editor.textContent
-    this.kue.push(1)
-    var leap = +new Date() - this.last
 
-      _.nextTick(function (){
-        try { this.el.html(marked(md))} catch(ex){}
-        this.last = +new Date()
-        this.el.find('code').each(function (i, el){
-            var $el = $(el)
-              , html = $el.html()
-              , leftSingleQuote = /‘/g
-              , leftDoubleQuote = /“/g
-              , singleQuote     = /’/g
-              , doubleQuote     = /”/g
+    _.nextTick(function (){
+      try { this.el.html(marked(md))} catch(ex){}
+      this.last = +new Date()
+      this.el.find('code').each(function (i, el){
+          var $el = $(el)
+            , html = $el.html()
+            , leftSingleQuote = /‘/g
+            , leftDoubleQuote = /“/g
+            , singleQuote     = /’/g
+            , doubleQuote     = /”/g
 
-            html = html
-                .replace(leftSingleQuote, '\'')
-                .replace(leftDoubleQuote, '\"')
-                .replace(singleQuote, '\'')
-                .replace(doubleQuote, '\"');
+          html =
+            html
+              .replace(leftSingleQuote, '\'')
+              .replace(leftDoubleQuote, '\"')
+              .replace(singleQuote, '\'')
+              .replace(doubleQuote, '\"');
 
-            $el.html(html);
+          $el.html(html);
 
-            var classes = el.className.split(/\s+/);
-            classes.forEach(function(klass){
-              if (klass.indexOf('lang-') !== -1) {
-                    var language = klass.substring('lang-'.length);
-                    $el.attr('data-language', language);
-              }
-            })
-            try { Rainbow.color() }catch(ex){}
-        })
-        
-      }.bind(this))
+          var classes = el.className.split(/\s+/);
+          classes.forEach(function(klass){
+            if (klass.indexOf('lang-') !== -1) {
+                  var language = klass.substring('lang-'.length);
+                  $el.attr('data-language', language);
+            }
+          })
+          try { Rainbow.color() }catch(ex){}
+      })
+      
+    }.bind(this))
   }
   
   /**
@@ -187,40 +212,38 @@ $(document).ready(function (){
                .show()
     },
     rename: function (){
-      var html = $('<input name="name" type="text" />')
+      var html = $('<input name="name" type="text" />' +
+                '<button data-name="ok"> Ok </button>')
       var el = App.UI.createDialog('New Name:', html)
 
       el.on('close', function (){
         App.e.rename(html.val())
       })
+    },
+    render: function (tmpl, vars){
+      return tmpl.replace(/<%=([\s\S]+?)%>/g, function(st, match){
+        match = match.trim()
+        if (vars[match]) return vars[match]
+        else return void 0
+      })
+    },
+    load: function (name){
+      return $('[name="tmpl-' + name +'"]').text()
+    },
+    showAll: function (){
+      var html = App.UI.load('list')
+      var loop = localStorage.length, i = 0
+      var output = []
+
+      for (; i <= loop; ++i) output.push(App.UI.render(html, {
+        id: localStorage.key(i)
+      }))
+      App.UI.createDialog('Files:', $('<ul>' + output.join('') +'</ul>'))
     }
   }
 
   /**
    * Setup
    */
-  define('editor', function(require) {
-    var editor = ace.edit("editor");
-    ace.config.set("workerPath", "components/ace/build/src");
-    editor.getSession().setMode("ace/mode/markdown");
-    editor.renderer.setShowGutter(false); 
-    editor.setKeyboardHandler(require('ace/keyboard/vim').handler)
-    return editor
-  })
-
-  window.Editor = require('editor')
-  App.editor = App.e = new App.Editor(window.Editor)
-  App.reader = App.r = new App.Reader()
-  App.UI.menu
-    .add('New &lt;alt+n&gt;', App.e.newCanvas)
-    .add('Load &lt;alt+o&gt;', App.e.loadCanvas)
-    .add('Set Name', App.e.setName)
-    .add('Rename', App.UI.rename)
-    .add('Clean all', App.e.cleanCanvas)
-  
-  
-  window.oncontextmenu = function(e){
-    e.preventDefault();
-    App.UI.menu.moveTo(e.pageX, e.pageY).show();
-  }
+   App.initialize()
 })
