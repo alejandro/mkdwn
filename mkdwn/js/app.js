@@ -34,7 +34,7 @@ $(document).ready(function (){
         enumerable: true
       })
     }
-  }
+  }/* eof utils */
   /**
    * Initialize
    * -----------
@@ -153,7 +153,7 @@ $(document).ready(function (){
     remove: function (){
       return localStorage.removeItem(this.id)
     }
-  })
+  }) /* eof Editor */
 
   /**
    * Reader (preview) Panel
@@ -198,7 +198,7 @@ $(document).ready(function (){
       })
       
     }.bind(this))
-  }
+  } /* eof Reader */
   
   /**
    * UI Elements
@@ -239,11 +239,26 @@ $(document).ready(function (){
         id: localStorage.key(i)
       }))
       App.UI.createDialog('Files:', $('<ul>' + output.join('') +'</ul>'))
+    },
+
+    btns: function (btns){
+      btns.forEach(function (it){
+        $('#' + it).on('click', function (e){
+          var el = $(e.target), action = (el.data().binding || '')
+          App.UI.actions[action].apply(this, arguments)
+        })
+      })
+    },
+    actions: {
+      'new': function (ev){
+        console.log(ev.target)
+      }
     }
-  }
+  } /* eof UI Elements*/
 
   /**
    * Setup
    */
+   App.UI.btns(['wbtns','rbtns'])
    App.initialize()
 })

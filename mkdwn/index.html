@@ -17,16 +17,16 @@
 <body>
 	<div id="wrapper">
 		<section class="write">
-			<div class="write-buttons">
-        <button class="menu-button ss-rows"></button>
-        <button class="add-button ss-plus"></button>
-        <button class="write-only-button ss-write"></button>
+			<div class="write-buttons" id="wbtns">
+        <button class="menu-button ss-rows" data-binding="menu"></button>
+        <button class="add-button ss-plus" data-binding="new"></button>
+        <button class="write-only-button ss-write" data-binding="fsc"></button>
     </div>
     <div id="editor"></div>
 		</section>
 		<section class="read">
-			<div class="read-buttons">
-        <button class="read-only-button ss-view"></button>
+			<div class="read-buttons" id="rbtns">
+        <button class="read-only-button ss-view" data-binding="rfsc"></button>
     	</div>
     	<article class="document-article" name="output"></article>
 		</section>
@@ -34,6 +34,9 @@
 		</footer>
 	
   </div>
+  <script name="tmpl-list" type="text/plain">
+      <li data-name="<%= id %>"><a href="#<%= id %>" target="_blank"><%= id %></a></li>
+  </script>
   <script src="components/ace/src/ace.js" type="text/javascript">
   <script src="components/ace/src/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
   <script src="components/ace/src/mode-markdown.js" type="text/javascript" charset="utf-8"></script>
