@@ -24,7 +24,6 @@ $(document).ready(function (){
       if (typeof(property) === 'object') {
         var keys = Object.keys(property)
         return keys.forEach(function (k){
-          console.log(k, property[k])
           return _.defineProperty(el, k, keys[k])
         })
       }
@@ -54,10 +53,10 @@ $(document).ready(function (){
       .add('Rename', App.UI.rename)
       .add('Clean all', App.e.cleanCanvas)
     
+    App.UI.btns(['wbtns','rbtns'])
     
-    window.oncontextmenu = function(e){
+    window.oncontextmenu = function (e){
       e.preventDefault()
-      console.log(e.pageX, e.pageY)
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
     }
   }
@@ -71,7 +70,7 @@ $(document).ready(function (){
     ace.config.set("workerPath", "components/ace/build/src")
     editor.getSession().setMode("ace/mode/markdown")
     editor.renderer.setShowGutter(false)
-    editor.setKeyboardHandler(require('ace/keyboard/vim').handler)
+    editor.setKeyboardHandler(this.get('cfg:keyboard'))
     this.initialize(editor)
   }
   
@@ -109,7 +108,7 @@ $(document).ready(function (){
 
     save: function (){
       // let the event happen then fire this
-      _.nextTick(function(){ 
+      _.nextTick(function (){ 
         localStorage.setItem(this.id, JSON.stringify({
           id: this.id,
           textContent: this.textContent,
@@ -118,10 +117,22 @@ $(document).ready(function (){
       }.bind(this))
     },
 
-    get: function (){
+    get: function (e){
+      if (e) {
+        if (~e.indexOf(':')) {
+          e = e.split(':')
+          return this[e[0]][e[1]] || ''
+        } else {
+          return this[e]
+        }
+      }
       return localStorage.getItem(this.id)
     },
-
+    cfg: {
+      keyboard: (function (){
+        return require('ace/keyboard/vim').handler
+      })()
+    },
     setupStorage: function (){
       var cval = this.get()
       if (!cval) {
@@ -221,7 +232,7 @@ $(document).ready(function (){
       })
     },
     render: function (tmpl, vars){
-      return tmpl.replace(/<%=([\s\S]+?)%>/g, function(st, match){
+      return tmpl.replace(/<%=([\s\S]+?)%>/g, function (st, match){
         match = match.trim()
         if (vars[match]) return vars[match]
         else return void 0
@@ -245,10 +256,12 @@ $(document).ready(function (){
       btns.forEach(function (it){
         $('#' + it).on('click', function (e){
           var el = $(e.target), action = (el.data().binding || '')
-          App.UI.actions[action].apply(this, arguments)
+          if (App.UI.actions[action])
+            App.UI.actions[action].apply(this, arguments)
         })
       })
     },
+
     actions: {
       'new': function (ev){
         console.log(ev.target)
@@ -259,6 +272,5 @@ $(document).ready(function (){
   /**
    * Setup
    */
-   App.UI.btns(['wbtns','rbtns'])
    App.initialize()
 })
