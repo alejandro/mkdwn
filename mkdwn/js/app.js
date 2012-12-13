@@ -1,6 +1,6 @@
 /*global Rainbow, ace, $, document, localStorage, window, marked, ui*/
 /* jshint browser:true*/ 'use strict';
-var App =  {}
+!function (App){
 $(document).ready(function (){
   var _ = App.utils = App.u =  {
     id: function id(l) { // Author @rem, from jsbin
@@ -10,7 +10,7 @@ $(document).ready(function (){
 
       for (; index < length; index += 1) {
         set = (index % 2 === 0) ? vowels : consonants
-        word += set[Math.floor(Math.random() * set.length)];
+        word += set[Math.floor(Math.random() * set.length)]
       }
 
       return word
@@ -65,7 +65,7 @@ $(document).ready(function (){
    * --------------------------------
   */
   App.Editor = function (){
-    var editor = ace.edit("editor");
+    var editor = ace.edit("editor")
     ui.Emitter.call(this)
     ace.config.set("workerPath", "components/ace/build/src")
     editor.getSession().setMode("ace/mode/markdown")
@@ -87,7 +87,7 @@ $(document).ready(function (){
     initialize: function (editor){
       var emitChange = this.emit.bind(this, 'change')
       this.id = (window.location.hash || _.id()).replace('#','')
-      this.el = editor;
+      this.el = editor
       
       _.defineProperty(this, 'textContent', function (){
         return this.el.getValue()
@@ -194,15 +194,15 @@ $(document).ready(function (){
               .replace(leftSingleQuote, '\'')
               .replace(leftDoubleQuote, '\"')
               .replace(singleQuote, '\'')
-              .replace(doubleQuote, '\"');
+              .replace(doubleQuote, '\"')
 
-          $el.html(html);
+          $el.html(html)
 
-          var classes = el.className.split(/\s+/);
+          var classes = el.className.split(/\s+/)
           classes.forEach(function(klass){
             if (klass.indexOf('lang-') !== -1) {
-                  var language = klass.substring('lang-'.length);
-                  $el.attr('data-language', language);
+                  var language = klass.substring('lang-'.length)
+                  $el.attr('data-language', language)
             }
           })
           try { Rainbow.color() }catch(ex){}
@@ -274,3 +274,5 @@ $(document).ready(function (){
    */
    App.initialize()
 })
+
+}(window.App = {})
