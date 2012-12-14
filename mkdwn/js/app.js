@@ -10,7 +10,10 @@ if (!Object.create || !Function.bind) { // TODO. Refactor this :trollface
 }
 
 $(document).ready(function (){  
-  var w = $('.write'), r = $('.read'), write = true, read = true, fsc = false
+  var w = $('.write')
+    , r = $('.read')
+    , title = $('#title')
+    , write = true, read = true, fsc = false
   // Helpers
   var _ = App.utils = App.u =  {
     id: function id(l) { // Author @rem, from jsbin
@@ -61,9 +64,8 @@ $(document).ready(function (){
     App.reader = App.r = new App.Reader()
     App.UI.menu
       .add('New &lt;alt+n&gt;', App.e.newCanvas)
-      .add('List', App.UI.showAll)
-      .add('Load &lt;alt+o&gt;', App.e.loadCanvas)
-      .add('Set Name', App.e.setName)
+      .add('Load &lt;alt+o&gt;', App.UI.showAll)
+      .add('Set Name', App.UI.rename)
       .add('Rename', App.UI.rename)
       .add('Clean all', App.e.cleanCanvas)
     
@@ -72,6 +74,10 @@ $(document).ready(function (){
     window.oncontextmenu = function (e){
       e.preventDefault()      
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
+    }
+    window.onhashchange = function (e){
+      var newn = window.location.hash.replace('#','')
+      App.e.changeTo(newn)
     }
   }
   /**
@@ -101,15 +107,21 @@ $(document).ready(function (){
   App.Editor.include({
     initialize: function (editor){
       var emitChange = this.emit.bind(this, 'change')
-      this.id = (window.location.hash || _.id()).replace('#','')
+        , last = localStorage.getItem('mkdwn:last')
+
+      if (!last) last = (window.location.hash || _.id())
+      this.id = last.replace('#','')
+        this.set('mkdwn:last', this.id)
+        window.location.hash = this.id
+
       this.el = editor
+      this.title = $('[data-id="name"]').text(this.id)
       
       _.defineProperty(this, 'textContent', function (){
         return this.el.getValue()
       }, function (t){
         return this.el.getSession().setValue(t)
       })
-
 
       this.setupStorage()
       this.el.on('keypress', emitChange)
@@ -196,8 +208,25 @@ $(document).ready(function (){
 
     toString: function (){
       return console.log('Name: ' + this.id + '\nLast modified: ' + new Date(this.mtime))
+    },
+
+    set: function (key, val) {
+      localStorage.setItem(key, val)
+      this.emit('saved')
+    },
+
+    changeTo: function (name) {
+      if (localStorage[name]) {
+        this.save()
+        var raw = JSON.parse(localStorage.getItem(name))
+        this.id = name
+        this.mtime = raw.mtime
+        this.textContent = raw.textContent || ''
+        this.set('mkdwn:last', this.id)
+        this.emit('change')
+      }
     }
-  }) /* eof Editor */
+  })/* eof Editor */
 
   /**
    * Reader (preview) Panel
@@ -279,13 +308,24 @@ $(document).ready(function (){
     showAll: function (){
       var html = this.load('list')
         , loop = localStorage.length
-        , output = [], i = 0
+        , output = [], dialog, i = 0
 
-      for (; i <= loop; ++i) output.push(this.render(html, {
-        id: localStorage.key(i)
-      }))
-      this.createDialog('Files:', $('<ul>' + output.join('') + '</ul>' +
-        '<button data-action="close" class="button">Cancel</button>'))
+      for (; i <= loop; ++i) {
+        var item = localStorage.key(i) || ''
+        if (~item.indexOf('mkdwn:')) continue
+        output.push(this.render(html, {
+          id: item
+        }))
+      }
+      html = $(
+          '<ul>' + output.join('') + '</ul>' +
+          '<button data-action="close" class="button">Cancel</button>'
+        )
+      dialog = this.createDialog('Files:', html)
+
+      html.on('click', function (e){
+        dialog.hide()
+      })
     },
 
     btns: function (btns){
@@ -335,11 +375,27 @@ $(document).ready(function (){
           App.UI.menu.moveTo(e.pageX, e.pageY).show()
         })
       }
+    },
+    toggleTitle: function(){
+      title.slideToggle()
+      setTimeout(function(){
+        title.slideToggle()
+      }, 2000)
     }
   }) /* eof UI Elements*/
 
   /* Setup */
   App.initialize()
+
+  setTimeout(function (){ title.slideToggle()}, 5000)
+  var last = +new Date
+  $('#wrapper').hover(function (e){
+    if (e.pageY < 5) {
+      if ((+new Date - last) > 2000) {
+        App.UI.toggleTitle(), last = +new Date
+      }
+    }
+  })
 })
 
 })(window.App = {})

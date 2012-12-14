@@ -9,14 +9,26 @@
   <link rel="stylesheet" type="text/css" href="components/tuktuk/widgets/tuktuk.widget.modal.css">
   <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.css">
   <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.theme.css">
-  </style>
+  
 	<style type="text/css">/*TODO: move this to app.css*/
+    #title {
+      background: #222;
+      padding: 8px 20px;box-shadow: 1px 1px #EEE;
+      margin-bottom: 3px;
+      position: fixed;
+      z-index: 100;
+      width: 100%;
+      opacity: 0.7;
+    }
+    ul { list-style: none; padding-top: 10px}
+    ul li a { padding-left: 15px}
+    ul li span { font-size: 9px}
 	</style>
 </head>
 
 <body>
 	<div id="wrapper">
-
+    <h3 class="logo text thin color white" id="title">Editing: <span data-id="name"></span></h3>
 		<section class="write column_6 bck light padding">
 			<div class="write-buttons" id="wbtns">
         <button class="menu-button ss-rows" data-binding="menu"></button>
@@ -34,8 +46,11 @@
 		<footer id="footer">
 		</footer>
   </div>
-  <script name="tmpl-list" type="text/plain">
-      <li data-name="<%= id %>"><a href="#<%= id %>" target="_blank"><%= id %></a></li>
+  <script name="tmpl-list" type="text/template">
+    <li data-name="<%= id %>"><span class="ss-delete"></span>  <a href="#<%= id %>"><%= id %></a></li>
+  </script>
+  <script name="tmpl-rename" type="text/template">
+    <input name="name" type="text" /><button data-name="ok">Ok</button>
   </script>
   <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="components/marked/lib/marked.js"></script>
