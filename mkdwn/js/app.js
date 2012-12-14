@@ -210,9 +210,11 @@ $(document).ready(function (){
       return console.log('Name: ' + this.id + '\nLast modified: ' + new Date(this.mtime))
     },
 
-    set: function (key, val) {
-      localStorage.setItem(key, val)
-      this.emit('saved')
+    set: function (key, val, local) {
+      if (local) {
+        this[key] = val
+      }  else localStorage.setItem(key, val)
+      this.emit('item:saved')
     },
 
     changeTo: function (name) {
