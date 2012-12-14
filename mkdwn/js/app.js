@@ -1,10 +1,15 @@
 
-/*global Rainbow, ace, $, document, localStorage, window, marked, ui*/
-/* jshint browser:true*/ 'use strict';
+/*global Rainbow, ace, $, document, localStorage, window, marked, ui, alert*/
+/* jshint browser:true */ 'use strict';
 
-!function (App){
+(function (App){
 
-$(document).ready(function (){
+if (!Object.create || !Function.bind) { // TODO. Refactor this :trollface
+  var msg = 'Yo, your browser is too old for this!'
+  alert(msg); throw new Error(msg)
+}
+
+$(document).ready(function (){  
   var w = $('.write'), r = $('.read'), write = true, read = true, fsc = false
   // Helpers
   var _ = App.utils = App.u =  {
@@ -21,7 +26,8 @@ $(document).ready(function (){
       return word
     },
 
-    nextTick: function (fn){ // this is silly
+    nextTick: function (fn, ctx){ // this is silly
+      if (ctx) fn = fn.bind(ctx)
       return setTimeout(fn, 0)
     },
 
@@ -46,6 +52,11 @@ $(document).ready(function (){
         gfm      : true,
         sanitize : true
     })
+    
+    ;['showAll', 'rename'].forEach(function(it){
+      App.UI[it] = App.UI[it].bind(App.UI)
+    })
+
     App.editor = App.e = new App.Editor()
     App.reader = App.r = new App.Reader()
     App.UI.menu
@@ -67,8 +78,9 @@ $(document).ready(function (){
    * Markdown Editor powered with Ace
    * --------------------------------
   */
-  App.Editor = function (){
+  App.Editor = function Editor() {
     var editor = ace.edit("editor")
+    
     ui.Emitter.call(this)
     ace.config.set("workerPath", "components/ace/build/src")
     editor.getSession().setMode("ace/mode/markdown")
@@ -98,6 +110,7 @@ $(document).ready(function (){
         return this.el.getSession().setValue(t)
       })
 
+
       this.setupStorage()
       this.el.on('keypress', emitChange)
       this.el.on('change', emitChange)
@@ -117,7 +130,7 @@ $(document).ready(function (){
           textContent: this.textContent,
           mtime: +new Date()
         }))
-      }.bind(this))
+      }, this)
     },
 
     get: function (e){
@@ -132,11 +145,20 @@ $(document).ready(function (){
       return localStorage.getItem(this.id)
     },
 
-    cfg: {
-      keyboard: (function (){
-        return require('ace/keyboard/vim').handler
-      })()
-    },
+    cfg: (function (){
+      var cfg = JSON.parse(localStorage.getItem('mkdwn:cfg'))
+      if (!cfg) cfg = {}
+      var keyboard = {
+        vim: require('ace/keyboard/vim').handler,
+        emacs: require('ace/keyboard/emacs').handler,
+        default: require('ace/keyboard/vim').handler
+      }
+      if (!cfg.keyboard) cfg.keyboard = 'default'
+      localStorage.setItem('mkdwn:cfg', JSON.stringify(cfg)) // save in the last load
+
+      cfg.keyboard = keyboard[cfg.keyboard || 'default']
+      return cfg
+    })(),
 
     setupStorage: function (){
       var cval = this.get()
@@ -152,7 +174,7 @@ $(document).ready(function (){
     merge: function (o){
       return Object.keys(o).forEach(function (i){
         return this[i] = o[i]
-      }.bind(this))
+      }, this)
     },
 
     rename: function (name){
@@ -170,6 +192,10 @@ $(document).ready(function (){
 
     remove: function (){
       return localStorage.removeItem(this.id)
+    },
+
+    toString: function (){
+      return console.log('Name: ' + this.id + '\nLast modified: ' + new Date(this.mtime))
     }
   }) /* eof Editor */
 
@@ -216,29 +242,28 @@ $(document).ready(function (){
           try { Rainbow.color() }catch(ex){}
       })
       
-    }.bind(this))
+    }, this)
   } /* eof Reader */
   
   /**
    * UI Elements
    */
-  App.UI = {
+  App.UI = Object.create({
     menu: ui.menu(),
+
     createDialog: function (title, body){
-      return ui.dialog(title, body)
-               .closable()
-               .overlay()
-               .show()
+      return ui.dialog(title, body).closable().overlay().show()
     },
+
     rename: function (){
-      var html = $('<input name="name" type="text" />' +
-                '<button data-name="ok"> Ok </button>')
-      var el = App.UI.createDialog('New Name:', html)
+      var html = $(this.load('rename'))
+      var el = this.createDialog('New Name:', html)
 
       el.on('close', function (){
         App.e.rename(html.val())
       })
     },
+
     render: function (tmpl, vars){
       return tmpl.replace(/<%=([\s\S]+?)%>/g, function (st, match){
         match = match.trim()
@@ -246,51 +271,53 @@ $(document).ready(function (){
         else return void 0
       })
     },
+
     load: function (name){
       return $('[name="tmpl-' + name +'"]').text()
     },
-    showAll: function (){
-      var html = App.UI.load('list')
-      var loop = localStorage.length, i = 0
-      var output = []
 
-      for (; i <= loop; ++i) output.push(App.UI.render(html, {
+    showAll: function (){
+      var html = this.load('list')
+        , loop = localStorage.length
+        , output = [], i = 0
+
+      for (; i <= loop; ++i) output.push(this.render(html, {
         id: localStorage.key(i)
       }))
-      App.UI.createDialog('Files:', $('<ul>' + output.join('') +'</ul>'+
+      this.createDialog('Files:', $('<ul>' + output.join('') + '</ul>' +
         '<button data-action="close" class="button">Cancel</button>'))
     },
 
     btns: function (btns){
+      var $s = this
       btns.forEach(function (it){
         $('#' + it).on('click', function (e){
           var el = $(e.target), action = (el.data().binding || '')
-          if (App.UI.actions[action])
-            App.UI.actions[action].apply(this, arguments)
+          if ($s.actions[action])
+            $s.actions[action].apply(this, arguments)
         })
       })
     },
 
     actions: {
       'new': function (ev){
-        console.log(ev.target)
+        // TODO: IMPLEMENTE THIS
       },
       /* read fullscreen */
-      'rfsc': function (){
+      rfsc: function (){
         w.toggle()
         if (write && !fsc) {
           r.removeClass('column_6').addClass('column_12')  
           fsc = true, write = false
         } else {
-          r.removeClass('column_12')
-          r.addClass('column_6')
+          r.removeClass('column_12').addClass('column_6')
           fsc = false, read = true, write = true
         }
         App.e.emit('change')
         
       },
       /* write fullscreen */
-      'wfsc': function (){
+      wfsc: function (){
         r.toggle()
         if (read && !fsc) {
           w.removeClass('column_6').addClass('column_12')
@@ -301,6 +328,7 @@ $(document).ready(function (){
         }
         App.e.emit('change')
       },
+      /* menu item */
       menu: function (e){
         e.preventDefault();
         _.nextTick(function(){ // BUG
@@ -308,10 +336,10 @@ $(document).ready(function (){
         })
       }
     }
-  } /* eof UI Elements*/
+  }) /* eof UI Elements*/
 
   /* Setup */
   App.initialize()
 })
 
-}(window.App = {})
+})(window.App = {})
