@@ -188,7 +188,7 @@ Dialog.prototype.render = function(options){
     return false;
   });
 
-  el.find('h1').text(title);
+  el.find('h2').text(title);
   if (!title) el.find('h1').remove();
 
   // message
@@ -297,7 +297,7 @@ Dialog.prototype.show = function(){
   if (!overlay || overlay.closable) this.escapable();
 
   this.el.appendTo('body');
-  this.el.css({ marginLeft: -(this.el.width() / 2) + 'px' });
+  this.el.css({});
   this.emit('show');
   return this;
 };
@@ -356,7 +356,7 @@ Dialog.prototype.remove = function(){
   return this;
 };
 
-})(ui, "<div id=\"dialog\" class=\"hide\">\n  <div class=\"content\">\n    <h1>Title</h1>\n    <a href=\"#\" class=\"close\">×</a>\n    <p>Message</p>\n  </div>\n</div>");
+})(ui, "<div id=\"dialog\" data-tuktuk=\"modal\" class=\"hide\">\n  <div class=\"content\">\n    <h2 class=\"text bold\">Title</h1><hr>\n    <a href=\"#\" class=\"close\">×</a>\n    <p>Message</p>\n  </div>\n</div>");
 ;(function(exports, html){
 
 /**

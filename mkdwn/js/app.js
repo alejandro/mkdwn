@@ -1,7 +1,12 @@
+
 /*global Rainbow, ace, $, document, localStorage, window, marked, ui*/
 /* jshint browser:true*/ 'use strict';
+
 !function (App){
+
 $(document).ready(function (){
+  var w = $('.write'), r = $('.read'), write = true, read = true, fsc = false
+  // Helpers
   var _ = App.utils = App.u =  {
     id: function id(l) { // Author @rem, from jsbin
       var vowels = 'aeiouAEIOU',
@@ -34,10 +39,8 @@ $(document).ready(function (){
       })
     }
   }/* eof utils */
-  /**
-   * Initialize
-   * -----------
-   */
+  
+  /** Initialize **/
   App.initialize = function (){
     marked.setOptions({
         gfm      : true,
@@ -56,7 +59,7 @@ $(document).ready(function (){
     App.UI.btns(['wbtns','rbtns'])
     
     window.oncontextmenu = function (e){
-      e.preventDefault()
+      e.preventDefault()      
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
     }
   }
@@ -128,11 +131,13 @@ $(document).ready(function (){
       }
       return localStorage.getItem(this.id)
     },
+
     cfg: {
       keyboard: (function (){
         return require('ace/keyboard/vim').handler
       })()
     },
+
     setupStorage: function (){
       var cval = this.get()
       if (!cval) {
@@ -149,6 +154,7 @@ $(document).ready(function (){
         return this[i] = o[i]
       }.bind(this))
     },
+
     rename: function (name){
       // var oid = this.id, co = this.get()
 
@@ -161,6 +167,7 @@ $(document).ready(function (){
       }
       window.location.hash = this.id
     },
+
     remove: function (){
       return localStorage.removeItem(this.id)
     }
@@ -176,6 +183,7 @@ $(document).ready(function (){
   }
 
   App.Reader.prototype.parse = function() {
+    if (!read) return /* if the preview tab is not on don't do a thing */
     var md = App.editor.textContent
 
     _.nextTick(function (){
@@ -249,7 +257,8 @@ $(document).ready(function (){
       for (; i <= loop; ++i) output.push(App.UI.render(html, {
         id: localStorage.key(i)
       }))
-      App.UI.createDialog('Files:', $('<ul>' + output.join('') +'</ul>'))
+      App.UI.createDialog('Files:', $('<ul>' + output.join('') +'</ul>'+
+        '<button data-action="close" class="button">Cancel</button>'))
     },
 
     btns: function (btns){
@@ -265,14 +274,44 @@ $(document).ready(function (){
     actions: {
       'new': function (ev){
         console.log(ev.target)
+      },
+      /* read fullscreen */
+      'rfsc': function (){
+        w.toggle()
+        if (write && !fsc) {
+          r.removeClass('column_6').addClass('column_12')  
+          fsc = true, write = false
+        } else {
+          r.removeClass('column_12')
+          r.addClass('column_6')
+          fsc = false, read = true, write = true
+        }
+        App.e.emit('change')
+        
+      },
+      /* write fullscreen */
+      'wfsc': function (){
+        r.toggle()
+        if (read && !fsc) {
+          w.removeClass('column_6').addClass('column_12')
+          fsc = true, read = false
+        } else {
+          w.removeClass('column_12').addClass('column_6')
+          fsc = false, read = true, write = true
+        }
+        App.e.emit('change')
+      },
+      menu: function (e){
+        e.preventDefault();
+        _.nextTick(function(){ // BUG
+          App.UI.menu.moveTo(e.pageX, e.pageY).show()
+        })
       }
     }
   } /* eof UI Elements*/
 
-  /**
-   * Setup
-   */
-   App.initialize()
+  /* Setup */
+  App.initialize()
 })
 
 }(window.App = {})
