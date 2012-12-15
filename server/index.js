@@ -4,23 +4,17 @@ app.serveFilesFrom(__dirname + '/../app');
 
 var window = app.createWindow({});
 
-window.on('create', function(){
+window.on('create', function (){
   console.log("Window Created");
   window.frame.show();
   window.frame.center();
 });
 
-
-function localStorage(){
-
-}
-
-window.on('ready', function(){
-  window.isNode = true  
-  window.process = process
-  window.module = module
-  window.Store = localStorage
-  console.log(+new Date - window.start)
+window.on('ready', function (){
+  // window.process = process
+  // window.module = module
+  window.isNode = true
+  window.Store = require('./localStorage')
   function F12(e){ return e.keyIdentifier === 'F12' }
   function Command_Option_J(e){ return e.keyCode === 74 && e.metaKey && e.altKey }
 

@@ -1,15 +1,24 @@
-
-/*global Rainbow, ace, $, document, localStorage, window, marked, ui, alert*/
+/*global Rainbow, ace, $, document, window, marked, ui, alert, App*/
 /* jshint browser:true */ 'use strict';
 
-(function (App){
+var oldRequire = require
+
+setTimeout(function (){
+var localStorage = window.localStorage
 
 if (!Object.create || !Function.bind) { // TODO. Refactor this :trollface
   var msg = 'Yo, your browser is too old for this!'
   alert(msg); throw new Error(msg)
 }
 
-$(document).ready(function (){  
+if (window.isNode) {
+  localStorage = window.Store
+  window.require = oldRequire
+}
+
+window.App = {}
+
+$(document).ready(function (){
   var w = $('.write')
     , r = $('.read')
     , title = $('#title')
@@ -75,7 +84,7 @@ $(document).ready(function (){
       e.preventDefault()      
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
     }
-    window.onhashchange = function (e){
+    window.onhashchange = function (){
       var newn = window.location.hash.replace('#','')
       App.e.changeTo(newn)
     }
@@ -163,7 +172,7 @@ $(document).ready(function (){
       var keyboard = {
         vim: require('ace/keyboard/vim').handler,
         emacs: require('ace/keyboard/emacs').handler,
-        default: require('ace/keyboard/vim').handler
+        'default': require('ace/keyboard/vim').handler
       }
       if (!cfg.keyboard) cfg.keyboard = 'default'
       localStorage.setItem('mkdwn:cfg', JSON.stringify(cfg)) // save in the last load
@@ -325,7 +334,7 @@ $(document).ready(function (){
         )
       dialog = this.createDialog('Files:', html)
 
-      html.on('click', function (e){
+      html.on('click', function (){
         dialog.hide()
       })
     },
@@ -342,7 +351,7 @@ $(document).ready(function (){
     },
 
     actions: {
-      'new': function (ev){
+      'new': function (){
         // TODO: IMPLEMENTE THIS
       },
       /* read fullscreen */
@@ -372,7 +381,7 @@ $(document).ready(function (){
       },
       /* menu item */
       menu: function (e){
-        e.preventDefault();
+        e.preventDefault()
         _.nextTick(function(){ // BUG
           App.UI.menu.moveTo(e.pageX, e.pageY).show()
         })
@@ -390,14 +399,14 @@ $(document).ready(function (){
   App.initialize()
 
   setTimeout(function (){ title.slideToggle()}, 5000)
-  var last = +new Date
+  var last = +new Date()
   $('#wrapper').hover(function (e){
     if (e.pageY < 5) {
-      if ((+new Date - last) > 2000) {
-        App.UI.toggleTitle(), last = +new Date
+      if ((+new Date() - last) > 2000) {
+        App.UI.toggleTitle(), last = +new Date()
       }
     }
   })
-})
+}) /* eof document.ready */
 
-})(window.App = {})
+}, 200) /* eof timeoout */
