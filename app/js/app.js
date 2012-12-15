@@ -57,7 +57,7 @@ $(document).ready(function (){
     })
     
     ;['showAll', 'rename'].forEach(function(it){
-      App.UI[it] = App.UI[it].bind(App.UI)
+      App.UI[it] = App.UI[it].bind(App.UI) // that's why you shouldn't use new
     })
 
     App.editor = App.e = new App.Editor()
