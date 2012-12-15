@@ -18,15 +18,20 @@ try {
 }
 
 var Storage = Object.create({
+  constructor: Storage,
+  enumerable: false,
+  configurable: false,
+
   get length(){
     return Object.keys(this).length
   },
+  
   clear: function (){
     return Object.keys(this).forEach(function (i){
       delete Storage[i]
     })
   },
-  constructor: Storage,
+  
   getItem: function (key){
     return this[key] || null
   },
@@ -65,8 +70,6 @@ var Storage = Object.create({
     }
   },
 
-  enumerable: false,
-  configurable: false
 })
 
 if (ll) {
