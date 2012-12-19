@@ -1,0 +1,96 @@
+<!DOCTYPE html >
+<html>
+<head>
+  <title>mkdwn :: Options</title>
+  
+  
+  <style type="text/css">
+  body {
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.7rem;
+    display: -webkit-box;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    background-color: #F0F0F0;
+  }
+  #wrapper {
+    width: 400px;
+    padding: 30px 42px;
+    margin-top: 10%;
+    border: 1px solid #CCC;
+    background: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  header {
+    border-bottom: 1px solid #E6E6E6;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+  }
+  header h1 {
+    display: inline;
+  }
+  select {
+    -webkit-appearance: button;
+    -webkit-border-radius: 2px;
+    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-padding-end: 20px;
+    -webkit-padding-start: 2px;
+    -webkit-user-select: none;
+    /*background-image: url(arrow_down.png), */
+      -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+    background-position: center right;
+    background-repeat: no-repeat;
+    border: 1px solid #AAA;
+    color: #555;
+    font-size: inherit;
+    margin: 0;
+    overflow: hidden;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #logo {
+    display: inline;height: 50px;
+  }
+  ul { list-style:none;}
+  ul p {font-weight: bold;}
+  </style>
+</head>
+<body role="main">
+  <div id="wrapper">
+    <header>
+      <img id="logo" src="../icon_128.png" alt="logo">
+      <h1 id="title"> mkdwn:: Config Panel </h1>
+    </header>
+    <ul id="list">
+      <li>
+        <p> Key bindings: 
+          <select id="keyboard">
+            <optgroup>
+              <option>Vim</option>
+              <option>Emacs</option>
+              <option>None</option>
+            </optgroup>
+          </select>
+        </p>
+      </li>
+      <li>
+        <p> Theme: 
+          <select id="theme">
+            <optgroup>
+              <option>default</option>
+              <option>Monokai</option>
+              <option>mkdwn</option>
+            </optgroup>
+          </select>
+        </p>
+      </li>
+    </ul>
+    <em> All the changes are automatically saved</em>
+
+</div>
+
+<script type="application/javascript" src="js/options.js"></script>
+</body>
+</html>

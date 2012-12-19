@@ -380,6 +380,9 @@ $(document).ready(function (){
         _.nextTick(function(){ // BUG
           App.UI.menu.moveTo(e.pageX, e.pageY).show()
         })
+      },
+      options: function (){
+        open('chrome-extension://hpdcheheebhjfkbdbialimlbhoopehil/app/options.html')
       }
     },
     toggleTitle: function(){
