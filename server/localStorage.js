@@ -1,8 +1,8 @@
 /*
  * localStorage for Node
  * ----------------------
- * the Api is implemented, with save to disk functionality
-*/ /*jshint es5:true */ 'use strict';
+ * the localStorage API is implemented, with save to disk functionality
+*//*jshint es5:true */ 'use strict';
 
 
 var fs = require('fs')

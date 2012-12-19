@@ -1,4 +1,12 @@
 @charset "UTF-8";
+@import url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,700");
+body {
+  color: #000;
+  font-size: 1em;
+  line-height: 1.2;
+  font-family: "Source Sans Pro";
+  font-weight: 300;
+}
 
 html {
   font-size: 16px;
@@ -400,4 +408,29 @@ pre .function {
 }
 .ace_content {
   background: #FCFCFA;
+}
+
+
+/*scrollbar*/
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar:vertical {
+    width: 4px;
+}
+::-webkit-scrollbar:horizontal {
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+::-webkit-scrollbar-thumb:vertical {
+  background: #5a5a5a;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: #444;
 }

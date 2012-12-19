@@ -61,8 +61,8 @@ $(document).ready(function (){
   /** Initialize **/
   App.initialize = function (){
     marked.setOptions({
-        gfm      : true,
-        sanitize : true
+      gfm      : true,
+      sanitize : true
     })
     
     ;['showAll', 'rename'].forEach(function(it){
@@ -79,7 +79,7 @@ $(document).ready(function (){
       .add('Clean all', App.e.cleanCanvas)
     
     App.UI.btns(['wbtns','rbtns'])
-    
+    App.UI.actions.wfsc()
     window.oncontextmenu = function (e){
       e.preventDefault()      
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
@@ -258,21 +258,16 @@ $(document).ready(function (){
       this.el.find('code').each(function (i, el){
           var $el = $(el)
             , html = $el.html()
-            , leftSingleQuote = /‘/g
-            , leftDoubleQuote = /“/g
-            , singleQuote     = /’/g
-            , doubleQuote     = /”/g
-
-          html =
+            , classes
+        
+          html = // cleanup html
             html
-              .replace(leftSingleQuote, '\'')
-              .replace(leftDoubleQuote, '\"')
-              .replace(singleQuote, '\'')
-              .replace(doubleQuote, '\"')
+              .replace(/‘/g, '\'').replace(/’/g, '\'')
+              .replace(/“/g, '\"').replace(/”/g, '\"')
 
           $el.html(html)
 
-          var classes = el.className.split(/\s+/)
+          classes = el.className.split(/\s+/)
           classes.forEach(function(klass){
             if (klass.indexOf('lang-') !== -1) {
                   var language = klass.substring('lang-'.length)
@@ -358,10 +353,10 @@ $(document).ready(function (){
       rfsc: function (){
         w.toggle()
         if (write && !fsc) {
-          r.removeClass('column_6').addClass('column_12')  
+          r.removeClass('half').addClass('full')  
           fsc = true, write = false
         } else {
-          r.removeClass('column_12').addClass('column_6')
+          r.removeClass('full').addClass('half')
           fsc = false, read = true, write = true
         }
         App.e.emit('change')
@@ -371,10 +366,10 @@ $(document).ready(function (){
       wfsc: function (){
         r.toggle()
         if (read && !fsc) {
-          w.removeClass('column_6').addClass('column_12')
+          w.removeClass('half').addClass('full')
           fsc = true, read = false
         } else {
-          w.removeClass('column_12').addClass('column_6')
+          w.removeClass('full').addClass('half')
           fsc = false, read = true, write = true
         }
         App.e.emit('change')

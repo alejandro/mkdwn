@@ -1,4 +1,12 @@
 {
+   "app":{
+      "launch":{
+         "container":"panel",
+         "height": 600,
+         "width": 800,
+         "local_path":"app/index.html"
+      }
+   },
    "background_page": "background.html",
    "browser_action": {
       "default_icon": "icon.png",
@@ -9,7 +17,11 @@
       "128": "icon_128.png"
    },
    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUFJ4EmUIsNYgP+Oe3BGEAxcpIpFI+fiOA/osA6GLAscsCgbqbOGU7uYE8QY5jkIb279ohbZlB7hXvepbmbTJl8nnplim+ovgMK6HVwnMb9g+XxziMbYjGCixu/yTZlkxmkIJhWlZyVVJVltWHHIL4d7sK6tXSsRzVfI6wiDQhrQIDAQAB",
-   "name": "Markdown Preview",
+   "name": "mkdwn",
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "2.0"
+   "version": "2.0",
+   "offline_enabled": true,
+   "permissions": [ "notifications", "tabs", "management", "contextMenus", "https://docs.google.com/feeds/*", "https://www.google.com/accounts/OAuthGetRequestToken", "https://www.google.com/accounts/OAuthAuthorizeToken", "https://www.google.com/accounts/OAuthGetAccessToken" ],
+   "manifest_version":2
 }
+

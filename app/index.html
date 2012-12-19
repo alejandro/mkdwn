@@ -6,9 +6,9 @@
 	<link rel="stylesheet" type="text/css" href="css/font.css"></style>
 	<link rel="stylesheet" type="text/css" href="css/ui.css"></style>
 	<link rel="stylesheet" type="text/css" href="css/app.css"></style>
-  <link rel="stylesheet" type="text/css" href="components/tuktuk/widgets/tuktuk.widget.modal.css">
-  <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.css">
-  <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.theme.css">
+  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/widgets/tuktuk.widget.modal.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.css"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.theme.css"> -->
   
 	<style type="text/css">/*TODO: move this to app.css*/
     #title {
@@ -20,16 +20,44 @@
       width: 100%;
       opacity: 0.7;
     }
+    /* write screen */
+    .write {
+      position: absolute;
+      top: 0px;
+      right: 50%;
+      bottom: 31px;
+      left: 0px;
+      -webkit-transition: all 0.15s;
+      display: block;
+      /*background: #2D2D2D;*/
+    }
+    .read {display: inline;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    
+    right: 0px;
+    border: 0px;
+    height: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 5px;
+    }
     ul { list-style: none; padding-top: 10px}
     ul li a { padding-left: 15px}
     ul li span { font-size: 9px}
+    .text.thin { font-weight: 200;}
+    .text.white { color: #fff;}
+    .half { width: 50%;}
+    .full { width: 100%;}
 	</style>
 </head>
 
 <body>
 	<div id="wrapper">
-    <h3 class="logo text thin color white" id="title">Editing: <span data-id="name"></span></h3>
-		<section class="write column_6 bck light padding">
+    <h3 class="logo text thin white" id="title">Editing: <span data-id="name"></span></h3>
+		<section class="write half">
 			<div class="write-buttons" id="wbtns">
         <button class="menu-button ss-rows" data-binding="menu"></button>
         <button class="add-button ss-plus" data-binding="new"></button>
@@ -37,7 +65,7 @@
     </div>
     <div id="editor" style="padding-top:10px"></div>
 		</section>
-		<section class="read column_6 bck light padding">
+		<section class="read half">
 			<div class="read-buttons" id="rbtns">
         <button class="read-only-button ss-view" data-binding="rfsc"></button>
     	</div>
