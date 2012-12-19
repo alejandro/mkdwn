@@ -212,7 +212,8 @@ $(document).ready(function (){
     },
 
     remove: function (){
-      return localStorage.removeItem(this.id)
+      localStorage.removeItem(this.id)
+      this.initialize(this.el)
     },
 
     toString: function (){
