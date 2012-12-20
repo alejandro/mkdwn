@@ -2,9 +2,9 @@
 /* jshint browser:true */ 'use strict';
 
 var oldRequire = require
+var storage = chrome.storage.sync
 
-setTimeout(function (){
-var localStorage = window.localStorage
+setTimeout(function (){ // node app requires this
 
 if (!Object.create || !Function.bind) { // TODO. Refactor this :trollface
   var msg = 'Yo, your browser is too old for this!'
@@ -12,7 +12,7 @@ if (!Object.create || !Function.bind) { // TODO. Refactor this :trollface
 }
 
 if (window.isNode) {
-  localStorage = window.Store
+  storage = window.Store
   window.require = oldRequire
 }
 
@@ -115,16 +115,21 @@ $(document).ready(function (){
 
   App.Editor.include({
     initialize: function (editor){
+      var def = new $.Deferred
       var emitChange = this.emit.bind(this, 'change')
-        , last = localStorage.getItem('mkdwn:last')
 
-      if (!last) last = (window.location.hash || _.id())
-      this.id = last.replace('#','')
-        this.set('mkdwn:last', this.id)
-        window.location.hash = this.id
+      storage.get('mkdwn:last', def.resolve)
+      
+      def.done(function(last){
+        if (!last) last = (window.location.hash || _.id())
+        this.id = last.replace('#','')
+          this.set('mkdwn:last', this.id)
+          window.location.hash = this.id
 
-      this.el = editor
-      this.title = $('[data-id="name"]').text(this.id)
+        this.el = editor
+        this.title = $('[data-id="name"]').text(this.id)
+      }.bind(this))
+
       
       _.defineProperty(this, 'textContent', function (){
         return this.el.getValue()
@@ -146,11 +151,11 @@ $(document).ready(function (){
     save: function (){
       // let the event happen then fire this
       _.nextTick(function (){ 
-        localStorage.setItem(this.id, JSON.stringify({
+        storage.set(this.id, JSON.stringify({
           id: this.id,
           textContent: this.textContent,
           mtime: +new Date()
-        }))
+        }), function (){ console.log('')})
       }, this)
     },
 
@@ -383,7 +388,7 @@ $(document).ready(function (){
         })
       },
       options: function (){
-        open('chrome-extension://hpdcheheebhjfkbdbialimlbhoopehil/app/options.html')
+        open('chrome-extension://laglmimccafphiekpgnodhdpgioangkc/app/options.html')
       }
     },
     toggleTitle: function(){
