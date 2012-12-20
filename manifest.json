@@ -1,20 +1,30 @@
 {
-   "app": {
+  "app": {
     "background": {
       "scripts": ["app/launch.js"]
     }
   },
-   "description": "Preview markdown text.",
-   "icons": {
+  "description": "Full stack markdown editor",
+  "icons": {
       "128": "icon_128.png",
       "16": "icon_16.png"
-   },
-   "name": "mkdwn",
-   "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "2.0.1",
-   "offline_enabled": true,
-   "permissions": [ "notifications","storage", "contextMenus", "https://docs.google.com/feeds/*", "https://www.google.com/accounts/OAuthGetRequestToken", "https://www.google.com/accounts/OAuthAuthorizeToken", "https://www.google.com/accounts/OAuthGetAccessToken" ],
-   "manifest_version":2,
-   "options_page":"app/options.html"
+  },
+  "name": "mkdwn",
+  "update_url": "http://clients2.google.com/service/update2/crx",
+  "version": "2.0.1",
+  "offline_enabled": true,
+  "permissions": [
+    "notifications",
+    "storage",
+    "unlimitedStorage",
+    {"fileSystem": ["write"]},
+    "clipboardRead",
+    "clipboardWrite",
+    "contextMenus",
+    "<all_urls>"
+  ],
+  "manifest_version":2,
+  "options_page":"app/options.html",
+  "minimum_chrome_version":23
 }
 

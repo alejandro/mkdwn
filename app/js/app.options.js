@@ -1,9 +1,11 @@
 /*global Proxy*/
 /*jshint asi:true, laxcomma:true, browser:true, es5:true*/
 !function (){
+
   var $ = function (el){ return document.querySelector(el) }
     , $$ = function (el) { return document.querySelectorAll(el) }
-    , cfg = JSON.parse(localStorage['mkdwn:cfg']) || {}
+    , _  = require('app/helpers')
+    , cfg = _.Storage('cfg')
     , ref = {}
     , sels = $$('select'), sel = {}
     , proxy = 
@@ -12,8 +14,9 @@
         return ref[name]
       },
       set: function (o, p, val){
+        console.log(val)
         ref[p] = val.toLowerCase()
-        localStorage.setItem('mkdwn:cfg', JSON.stringify(ref))
+        cfg.set(ref)
         return ref
       }
     })
@@ -29,12 +32,16 @@
   }
 
   // copy the actual config to the proxy
-  Object.keys(cfg).forEach(function (it){
-    if (Object.hasOwnProperty.call(cfg, it)) {
-      proxy[it] = cfg[it],
-      $('#' + it).options.selectedIndex = sel[it][cfg[it]]
-    }
+  cfg.keys.forEach(function(it){
+    proxy[it] = cfg.get(it)
+    $('#' + it).options.selectedIndex = sel[it][cfg.get(it)]
   })
+  // Object.keys(cfg.keys).forEach(function (it){
+  //   if (Object.hasOwnProperty.call(cfg, it)) {
+  //     proxy[it] = cfg[it],
+  //     $('#' + it).options.selectedIndex = sel[it][cfg[it]]
+  //   }
+  // })
   cfg = proxy
   
 

@@ -6,9 +6,6 @@
 	<link rel="stylesheet" type="text/css" href="css/font.css"></style>
 	<link rel="stylesheet" type="text/css" href="css/ui.css"></style>
 	<link rel="stylesheet" type="text/css" href="css/app.css"></style>
-  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/widgets/tuktuk.widget.modal.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.css"> -->
-  <!-- <link rel="stylesheet" type="text/css" href="components/tuktuk/tuktuk.theme.css"> -->
   
 	<style type="text/css">/*TODO: move this to app.css*/
     #title {
@@ -55,20 +52,21 @@
 </head>
 
 <body>
-	<div id="wrapper">
+	<div id="wrapper" role="main">
     <h3 class="logo text thin white" id="title">Editing: <span data-id="name"></span></h3>
 		<section class="write half">
 			<div class="write-buttons" id="wbtns">
-        <button class="menu-button ss-rows" data-binding="menu"></button>
-        <button class="ss-dashboard" data-binding="options"></button>
-        <button class="add-button ss-plus" data-binding="new"></button>
-        <button class="write-only-button ss-write" data-binding="wfsc"></button>
+        <button class="menu-button ss-rows"        data-binding="menu"    title="Menu"></button>
+        <button class="ss-dashboard"               data-binding="options" title="Edit options"></button>
+        <button class="add-button ss-plus"         data-binding="new"     title="New File"></button>
+        <button class="write-only-button ss-write" data-binding="wfsc"    title="Hide/Show Preview"></button>
     </div>
     <div id="editor" style="padding-top:10px"></div>
 		</section>
 		<section class="read half">
 			<div class="read-buttons" id="rbtns">
-        <button class="read-only-button ss-view" data-binding="rfsc"></button>
+        <button class="read-only-button ss-view"    data-binding="rfsc"     title="Hide/Show Editor"></button>
+        <button class="read-only-button ss-desktop" data-binding="saveHTML" title="Save as HTML"></button>
     	</div>
     	<article class="document-article" name="output"></article>
 		</section>
@@ -81,6 +79,43 @@
   <script name="tmpl-rename" type="text/template">
     <input name="name" type="text" /><button data-name="ok">Ok</button>
   </script>
+  <script name="tmpl-default" type="text/template">
+  Using this tool
+---------------
+
+This page lets you create HTML by entering text in a simple format that's easy to read
+and write.
+
+  - Type Markdown text in the left window
+  - See the HTML in the right
+
+Markdown is a lightweight markup language based on the formatting conventions that
+people naturally use in email.  As [John Gruber] writes on the [Markdown site] [1]:
+
+> The overriding design goal for Markdown?s
+> formatting syntax is to make it as readable 
+> as possible. The idea is that a
+> Markdown-formatted document should be
+> publishable as-is, as plain text, without
+> looking like it's been marked up with tags
+> or formatting instructions.
+
+This document is written in Markdown; you can see the plain-text version on the left.
+To get a feel for Markdown's syntax, type some text into the left window and watch the
+results in the right.  You can see a Markdown syntax guide by switching the right-hand
+window from *Preview* to *Syntax Guide*.
+
+Showdown is a Javascript port of Markdown.  You can get the full [source code] by 
+clicking on the version number at the bottom of the page.
+
+**Start with a [blank page] or edit this document in the left window.**
+
+  [john gruber]: http://daringfireball.net/
+  [1]: http://daringfireball.net/projects/markdown/
+  [source code]: http://www.attacklab.net/showdown-v0.9.zip
+  [blank page]: ?blank=1 "Clear all text"
+
+  </script>
   <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="components/marked/lib/marked.js"></script>
   <script type="text/javascript" src="components/ace/src/ace.js" ></script>
@@ -90,7 +125,12 @@
   <script type="text/javascript" src="bindings/keybinding-emacs.js"></script>
   <script type="text/javascript" src="js/rainbow.min.js"></script>
   <script type="text/javascript" src="js/ui.js"></script>
-  <script type="text/javascript" src="js/app.js" defer></script>
+  <script type="text/javascript" src="js/app.helpers.js"></script>
+  <script type="text/javascript" src="js/app.fs.js"></script>
+  <script type="text/javascript" src="js/app.editor.js"></script>
+  <script type="text/javascript" src="js/app.reader.js"></script>  
+  <script type="text/javascript" src="js/app.runner.js" defer></script>
+
 </body>
 </html>
 	
