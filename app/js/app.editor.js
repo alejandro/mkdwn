@@ -1,18 +1,19 @@
+/*global App, ace, define, require, ui, $*/
 define('app/editor', function(){
   /**
    * Markdown Editor powered with Ace
    * --------------------------------
   */
   var _ = require('app/helpers')
-  var decorate = _.decorate
-  var Storage = _.Storage
-  var items = new Storage('items')
-  var cfg  = new Storage('cfg')
+    , decorate = _.decorate
+    , Storage  = _.Storage
+    , items    = new Storage('items')
+    , cfg      = new Storage('cfg')
 
   function noop(){}
 
   App.Editor = function Editor() {
-    if (!(this instanceof App.Editor)) return new App.Editor
+    if (!(this instanceof App.Editor)) return new App.Editor()
     var editor = ace.edit("editor")
     
     ui.Emitter.call(this)
@@ -23,7 +24,7 @@ define('app/editor', function(){
     this.initialize(editor)
   }
   
-  App.Editor.prototype = App.Editor.fn = new ui.Emitter()
+  App.Editor.prototype = new ui.Emitter()
     
 
   decorate(App.Editor.prototype, {
@@ -88,10 +89,10 @@ define('app/editor', function(){
         emacs: require('ace/keyboard/emacs').handler,
         'default': require('ace/keyboard/vim').handler
       }
-      if (!cfg.keyboard) cfg.keyboard = 'default'
-      cfg.set(cfg) // save in the last load
-      cfg.keyboard = keyboard[cfg.keyboard || 'default']
-      return cfg
+      if (!cfg.get('keyboard')) cfg.set('keyboard', 'default')
+
+      cfg.set('keyboard', keyboard[cfg.get('keyboard') || 'default'])
+      return cfg.items
     })(),
 
     setupStorage: function (){
@@ -118,7 +119,7 @@ define('app/editor', function(){
         this.remove()
         this.id = name
         this.save()
-      } else {
+      } else { // TODO! Fix me
 
       }
       window.location.hash = this.id

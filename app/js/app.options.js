@@ -8,20 +8,19 @@
     , cfg = _.Storage('cfg')
     , ref = {}
     , sels = $$('select'), sel = {}
-    , proxy = 
-    Proxy.create({
-      get: function (prox, name){
-        return ref[name]
-      },
-      set: function (o, p, val){
-        console.log(val)
-        ref[p] = val.toLowerCase()
-        cfg.set(ref)
-        return ref
-      }
-    })
+
+var proxy = Proxy.create({
+  get: function (prox, name){
+    return ref[name]
+  },
+  set: function (o, p, val){
+    ref[p] = val.toLowerCase()
+    cfg.set(ref)
+    return ref
+  }
+})
   
-  // set a reference for each option in selects so we can use it later
+  // set a reference for each option in <select>s so we can use it later
   // with its index
   for (var key in sels) {
     var s = sels[key], sid = sel[s.id] = {}
@@ -32,17 +31,19 @@
   }
 
   // copy the actual config to the proxy
+  window.cfg = cfg
   cfg.keys.forEach(function(it){
     proxy[it] = cfg.get(it)
+    console.log(sel[it], cfg.get(it))
     $('#' + it).options.selectedIndex = sel[it][cfg.get(it)]
   })
   // Object.keys(cfg.keys).forEach(function (it){
   //   if (Object.hasOwnProperty.call(cfg, it)) {
   //     proxy[it] = cfg[it],
-  //     $('#' + it).options.selectedIndex = sel[it][cfg[it]]
+  //      $('#' + it).options.selectedIndex = sel[it][cfg[it]]
   //   }
   // })
-  cfg = proxy
+  
   
 
   ;['keyboard', 'theme'].forEach(function (id){
@@ -51,6 +52,6 @@
 
   function actions(target, ev) {
     var el =  ev.target
-    cfg[target] = el.value
+    proxy[target] = el.value
   }
 }()

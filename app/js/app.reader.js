@@ -21,7 +21,7 @@ define('app/reader', function(){
     }
     return md
   }
-  App.Reader.prototype.parse = function() {
+  App.Reader.prototype.parse = function (){
     if (!App.UI.read) return /* if the preview tab is not on don't do a thing */
     var md = App.editor.textContent
 
@@ -47,7 +47,7 @@ define('app/reader', function(){
                 $el.attr('data-language', language)
           }
         })
-        try { Rainbow.color() }catch(ex){}
+        try { Rainbow.color() } catch(ex) {}
       })
       
     }, this)

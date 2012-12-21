@@ -1,9 +1,10 @@
 /*global define chrome console App*/
-define('app/fs', function (){
+define('app/fs', function (){ 'use strict';
   function errorHandler(){
     console.error('[ERROR]', arguments)
   }
   function save(fileEntry, content) {
+    if (!fileEntry) return console.log('[error] no fileEntry')
     fileEntry.createWriter(function (fileWriter){
       fileWriter.onwriteend = function (){
         fileWriter.onwriteend = null
@@ -32,6 +33,7 @@ define('app/fs', function (){
   }
 
   return {
-    save: saveFileAs
+    save: saveFileAs,
+    saveFile: saveFile
   }
 })

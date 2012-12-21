@@ -7,7 +7,7 @@
 !function (exp){
   var definitions = {}
   exp.define = function define(name, definition) {
-    if (typeof(definition) !== 'function') definition = function (){ return definition}
+    if ('function' !== typeof(definition)) definition = function (){ return definition }
     definitions[name] = definition
   }
 
