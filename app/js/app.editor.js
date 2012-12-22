@@ -1,5 +1,5 @@
 /*global App, ace, define, require, ui, $*/
-define('app/editor', function(){
+define('app/editor', function(){'use strict';
   /**
    * Markdown Editor powered with Ace
    * --------------------------------
@@ -17,8 +17,8 @@ define('app/editor', function(){
     var editor = ace.edit("editor")
     
     ui.Emitter.call(this)
-    ace.config.set("workerPath", "components/ace/build/src")
-    editor.getSession().setMode("ace/mode/markdown")
+    ace.config.set('workerPath', 'components/ace/build/src')
+    editor.getSession().setMode('ace/mode/markdown')
     editor.renderer.setShowGutter(false)
     editor.setKeyboardHandler(this.get('cfg:keyboard'))
     this.initialize(editor)
@@ -55,7 +55,7 @@ define('app/editor', function(){
       }.bind(this))
     },
 
-    cleanCanvas : function (){
+    cleanCanvas: function (){
       this.textContent = ''
     },
 
