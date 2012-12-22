@@ -1,13 +1,10 @@
-define('app/reader', function(){
-  /**
-   * Reader (preview) Panel
-   */
-  App = App || {}
+/*global App, define, require, $, marked, Rainbow*/ /*jshint devel:true*/
+define('app/reader', function(){'use strict';
 
   var _ = require('app/helpers')
 
   App.Reader = function Reader(name) {
-    if (!(this instanceof App.Reader)) return new App.Reader
+    if (!(this instanceof App.Reader)) return new App.Reader(name)
     App.e.on('change', this.parse.bind(this))
     this.el = $('[name="' + (name || 'output') + '"]')
     this.active = true
@@ -22,8 +19,7 @@ define('app/reader', function(){
     return md
   }
   App.Reader.prototype.parse = function (){
-    if (!App.UI.read) return /* if the preview tab is not on don't do a thing */
-    var md = App.editor.textContent
+    if (!App.UI.read) return
 
     _.nextTick(function (){
       this.el.html(this.html())

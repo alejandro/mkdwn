@@ -1,9 +1,11 @@
 /*global define chrome ui console*/
-/*jshint asi:true, laxcomma:true, browser:true, es5:true,nonstandard:true*/
+/*jshint proto:true*/
 window.App = {}
 
-define('app/helpers', function(){
+define('app/helpers', function(){'use strict';
   
+  var utils
+
   function decorate(o, ks, deep){
     Object.keys(ks).forEach(function(k) {
         Object.defineProperty(o, k, Object.getOwnPropertyDescriptor(ks, k))
@@ -14,10 +16,6 @@ define('app/helpers', function(){
   function newo (k,v) { var o = {}; o[k] = v; return o}
   
   var cstorage = chrome.storage.sync
-
-  function scheduleWriteProcess (){
-
-  }
 
   function times(n) {
     var str = ''
@@ -36,7 +34,7 @@ define('app/helpers', function(){
         that.set(val, st[type][val])
       })
     })
-    that.lastChange = +new Date
+    that.lastChange = +new Date()
     this.on('change', function (ev){
       that.lastChange = +new Date()
       switch (ev.action){
@@ -46,11 +44,9 @@ define('app/helpers', function(){
         case 'new':
         case 'modify':
           set.add(ev.item.name)
-          window.saved = newo(type, this.store)
-
           break
         case 'clear':
-          cstorage.clear()
+          cstorage.remove(type)
           set = new Set()
           break
         default:
@@ -61,18 +57,17 @@ define('app/helpers', function(){
     utils.defineProperty(this, {
       'store': [function (){
         return store
-      }, function (val){
+      }, function (){// fix this
         return store
       }],
       'rset': [function (){
         return set
-      }, function (){
+      }, function (){// fix this
         console.log('set', arguments)
       }]
     })
 
     window.onclose = function (){
-      alert('saving file')
       that.save()
     }
     this.schedule()
@@ -97,7 +92,7 @@ define('app/helpers', function(){
       var t = this
       t.writeInterval = setInterval(function (){
         
-        if (+new Date - t.lastChange > 4000) return
+        if (+new Date() - t.lastChange > 4000) return
         console.log('saving', t.type)
         t.save()
       }, 4000)
@@ -130,7 +125,7 @@ define('app/helpers', function(){
     raw: cstorage,
   }) /* eof Storage */
 
-  var utils = {
+  utils = {
     Storage: window.isNode ? window.Store : Storage,
     decorate: decorate, // dunno why i export this but it's useful
     store: cstorage,

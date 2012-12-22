@@ -17,13 +17,8 @@ if (window.isNode) { //appjs override the require from ace
 
 $(document).ready(function (){
 
+  var title = $('#title')
 
-    var title = $('#title')
-    
-  // Helpers
-
-  
-  /** Initialize **/
   App.initialize = function (){
     marked.setOptions({
       gfm      : true,
@@ -47,16 +42,15 @@ $(document).ready(function (){
     App.UI.actions.wfsc()
 
     window.oncontextmenu = function (e){
-      // e.preventDefault()      
-      // App.UI.menu.moveTo(e.pageX, e.pageY).show()
+      e.preventDefault()      
+      App.UI.menu.moveTo(e.pageX, e.pageY).show()
     }
     window.onhashchange = function (){
       var newn = window.location.hash.replace('#','')
       App.e.changeTo(newn)
     }
   } /* eof App.initialize */
-
-  /* Setup */
+  
   App.initialize()
 
   setTimeout(function (){ title.slideToggle()}, 5000)

@@ -1,6 +1,5 @@
-/*global Proxy*/
-/*jshint asi:true, laxcomma:true, browser:true, es5:true*/
-!function (){
+/*global Proxy, require, console*/
+!function(){
 
   var $ = function (el){ return document.querySelector(el) }
     , $$ = function (el) { return document.querySelectorAll(el) }
@@ -30,6 +29,10 @@ var proxy = Proxy.create({
     }
   }
 
+  function actions(target, ev) {
+    var el =  ev.target
+    proxy[target] = el.value
+  }
   // copy the actual config to the proxy
   window.cfg = cfg
   cfg.keys.forEach(function(it){
@@ -37,21 +40,8 @@ var proxy = Proxy.create({
     console.log(sel[it], cfg.get(it))
     $('#' + it).options.selectedIndex = sel[it][cfg.get(it)]
   })
-  // Object.keys(cfg.keys).forEach(function (it){
-  //   if (Object.hasOwnProperty.call(cfg, it)) {
-  //     proxy[it] = cfg[it],
-  //      $('#' + it).options.selectedIndex = sel[it][cfg[it]]
-  //   }
-  // })
-  
-  
 
   ;['keyboard', 'theme'].forEach(function (id){
     $('#' + id).addEventListener('click', actions.bind(this, id))
   })
-
-  function actions(target, ev) {
-    var el =  ev.target
-    proxy[target] = el.value
-  }
 }()
