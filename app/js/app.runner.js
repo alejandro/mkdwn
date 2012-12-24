@@ -4,16 +4,15 @@
 var oldRequire = require
 
 
-setTimeout(function (/* node app want this*/){ "use strict";
+setTimeout(function (/* node app need this*/){ "use strict";
+
+if (window.isNode) window.require = oldRequire
 
 var Editor = require('app/editor')
   , Reader = require('app/reader')
 
 require('app/ui')
 
-if (window.isNode) { //appjs override the require from ace
-  window.require = oldRequire
-}
 
 $(document).ready(function (){
 
@@ -42,7 +41,7 @@ $(document).ready(function (){
     App.UI.actions.wfsc()
 
     window.oncontextmenu = function (e){
-      e.preventDefault()      
+      e.preventDefault()
       App.UI.menu.moveTo(e.pageX, e.pageY).show()
     }
     window.onhashchange = function (){
@@ -53,7 +52,7 @@ $(document).ready(function (){
   
   App.initialize()
 
-  setTimeout(function (){ title.slideToggle()}, 5000)
+  setTimeout(function (){ title.slideToggle() }, 5000)
 
   var last = +new Date()
 
