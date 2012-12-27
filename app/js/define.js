@@ -1,10 +1,10 @@
 /*
  * define
  * ------
- * Small one-purpose definition of "define" spec, this is the no brainer 
+ * Small one-purpose definition of "define" spec, this is the no brainer
  * version of it, and it should be only used if you are really crazy.
 */
-!function (exp){
+!function (exp){'use strict';
   var definitions = {}
   exp.define = function define(name, definition) {
     if ('function' !== typeof(definition)) definition = function (){ return definition }

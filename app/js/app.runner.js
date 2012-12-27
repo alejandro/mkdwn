@@ -4,7 +4,7 @@
 var oldRequire = require
 
 
-setTimeout(function (/* node app need this*/){ "use strict";
+setTimeout(function (/* node app need this*/){ 'use strict';
 
 if (window.isNode) window.require = oldRequire
 
